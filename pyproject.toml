@@ -1,0 +1,37 @@
+[tool.ruff]
+# 与 codestyle.md 中约定的规则保持一致
+line-length = 110
+target-version = "py311"
+exclude = [".venv", "venv", "__pycache__", "data"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle error
+    "W",   # pycodestyle warning
+    "F",   # pyflakes
+    "I",   # isort（import 排序）
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "RET", # flake8-return
+    "ARG", # 未使用的参数
+    "PTH", # 用 pathlib 替代 os.path
+    "RUF", # ruff 自带规则
+]
+ignore = [
+    "B008", # FastAPI 的 Depends()/Query() 必须写在默认值位置，属框架约定
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG001", "ARG002"] # 测试夹具参数多为占位
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.black]
+line-length = 110
+target-version = ["py311"]
+skip-string-normalization = false

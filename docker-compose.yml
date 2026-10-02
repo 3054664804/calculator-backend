@@ -1,0 +1,19 @@
+# 本地一键起后端（含 SQLite 数据卷），用于演示 / 助教本地验收：
+#   docker compose up --build
+# 启动后访问 http://127.0.0.1:8000/docs
+services:
+  backend:
+    build: .
+    image: calculator-backend:1.0.0
+    container_name: calculator-backend
+    ports:
+      - '8000:8000'
+    environment:
+      CALC_DB_PATH: /data/calculator.db
+      CALC_CORS_ORIGINS: '*'
+      CALC_LOG_LEVEL: INFO
+    volumes:
+      - calculator-data:/data
+
+volumes:
+  calculator-data:

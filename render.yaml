@@ -1,0 +1,31 @@
+# Render 蓝图：把本仓库一键部署成公网可访问的 FastAPI 服务
+# 用法：Render 控制台 → New → Blueprint → 选择本仓库 → Apply
+services:
+  - type: web
+    name: calculator-backend
+    runtime: python
+    plan: free
+    region: singapore # 亚洲节点，国内访问更快（可选 oregon / frankfurt / ohio）
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    # Render 会把公网端口注入 $PORT，必须用它启动
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: '3.12.5'
+      - key: CALC_LOG_LEVEL
+        value: INFO
+      # 前端部署到 Vercel 之后，把这里改成前端域名更安全，例如：
+      #   https://calculator-frontend-eight.vercel.app
+      - key: CALC_CORS_ORIGINS
+        value: '*'
+    # ⚠️ 免费实例没有持久磁盘：重新部署或实例重启后 SQLite 文件会被重置。
+    #    作业验收期间只要不重新部署，历史记录就会一直保留（进程重启也会保留
+    #    同一次容器内的文件）。若需要长期保留，升级付费实例后启用下面的磁盘，
+    #    并把 CALC_DB_PATH 设为 /var/data/calculator.db：
+    # disk:
+    #   name: calculator-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
